@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Spend trillions in this addictive simulation! Compete, have fun, and find out how rich you could be.">
+    <meta name="keywords" content="how rich, spend money game, billionaires, trillionaire, fun simulation, timepass game, spend simulator">
+    <meta name="author" content="HowRich.in Team">
+    <title>HowRich.in - Spend ₹1000 Trillion</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .money-counter {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .item-card {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .item-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .category-tab {
+            transition: all 0.3s ease;
+        }
+        
+        .category-tab.active {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+        }
+        
+        .global-counter {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .share-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .reset-button {
+            background: linear-gradient(45deg, #ff4757, #ff3838);
+            transition: all 0.3s ease;
+        }
+        
+        .reset-button:hover {
+            background: linear-gradient(45deg, #ff3838, #ff2f1f);
+            transform: scale(1.05);
+        }
+        .footer {
+            text-align: center;
+            color: gold;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-black bg-opacity-20 backdrop-filter backdrop-blur-lg text-white p-4">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-3xl font-bold">HowRich.in</h1>
+                <div class="flex items-center space-x-4">
+                    <div class="text-right">
+                        <div class="text-sm opacity-75">Money Left</div>
+                        <div id="moneyLeft" class="text-2xl font-bold money-counter">₹1,000,000,000,000,000</div>
+                    </div>
+                    <button id="resetMoneyBtn" class="reset-button text-white px-4 py-2 rounded-lg font-semibold">
+                        <i class="fas fa-redo mr-2"></i>Reset Money
+                    </button>
+                    <button id="timerModeBtn" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg font-semibold">
+                        <i class="fas fa-clock mr-2"></i>Timer Challenge
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Global Counter -->
+        <div class="bg-black bg-opacity-30 text-center py-2">
+            <div class="global-counter text-lg font-semibold">
+                Total ₹<span id="globalCounter">89,42,00,00,00,000</span> Spent by Players Worldwide
+            </div>
+        </div>
+
+        <!-- Timer Mode -->
+        <div id="timerMode" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center">
+            <div class="bg-white rounded-lg p-8 text-center max-w-md">
+                <h2 class="text-2xl font-bold mb-4">Timer Challenge!</h2>
+                <p class="mb-4">Spend ₹1000 Cr in 60 seconds!</p>
+                <div id="timerDisplay" class="text-4xl font-bold text-red-500 mb-4">60</div>
+                <button id="startTimer" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold">
+                    Start Challenge!
+                </button>
+                <button id="closeTimer" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg ml-2">
+                    Close
+                </button>
+            </div>
+        </div>
+
+        <!-- Reset Confirmation Modal -->
+        <div id="resetModal" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center">
+            <div class="bg-white rounded-lg p-8 text-center max-w-md">
+                <h2 class="text-2xl font-bold mb-4">🔄 Reset Money?</h2>
+                <p class="mb-4">Are you sure you want to reset your money to ₹1000 Trillion?</p>
+                <p class="mb-6 text-sm text-gray-600">This will reset your current spending session but keep your leaderboard scores!</p>
+                <div class="flex space-x-4">
+                    <button id="confirmReset" class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-semibold flex-1">
+                        Yes, Reset!
+                    </button>
+                    <button id="cancelReset" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold flex-1">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Game Area -->
+        <div class="container mx-auto px-4 py-8">
+            <!-- Stats Row -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div class="item-card rounded-lg p-6 text-white text-center">
+                    <i class="fas fa-money-bill-wave text-3xl mb-2 text-green-400"></i>
+                    <div class="text-2xl font-bold" id="totalSpent">₹0</div>
+                    <div class="text-sm opacity-75">Total Spent</div>
+                </div>
+                <div class="item-card rounded-lg p-6 text-white text-center">
+                    <i class="fas fa-shopping-cart text-3xl mb-2 text-blue-400"></i>
+                    <div class="text-2xl font-bold" id="itemsBought">0</div>
+                    <div class="text-sm opacity-75">Items Bought</div>
+                </div>
+                <div class="item-card rounded-lg p-6 text-white text-center">
+                    <i class="fas fa-trophy text-3xl mb-2 text-yellow-400"></i>
+                    <div class="text-2xl font-bold" id="userRank">#-</div>
+                    <div class="text-sm opacity-75">Your Rank</div>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <div class="flex flex-wrap justify-center mb-8">
+                <button class="category-tab active px-4 py-2 mx-1 mb-2 rounded-lg text-white font-semibold" data-category="all">All Items</button>
+                <button class="category-tab px-4 py-2 mx-1 mb-2 rounded-lg text-white font-semibold" data-category="realestate">Real Estate</button>
+                <button class="category-tab px-4 py-2 mx-1 mb-2 rounded-lg text-white font-semibold" data-category="vehicles">Vehicles</button>
+                <button class="category-tab px-4 py-2 mx-1 mb-2 rounded-lg text-white font-semibold" data-category="celebrities">Celebrities</button>
+                <button class="category-tab px-4 py-2 mx-1 mb-2 rounded-lg text-white font-semibold" data-category="planets">Planets</button>
+                <button class="category-tab px-4 py-2 mx-1 mb-2 rounded-lg text-white font-semibold" data-category="companies">Companies</button>
+                <button class="category-tab px-4 py-2 mx-1 mb-2 rounded-lg text-white font-semibold" data-category="crazy">Crazy Stuff</button>
+                <button class="category-tab px-4 py-2 mx-1 mb-2 rounded-lg text-white font-semibold" data-category="leaderboard">Leaderboard</button>
+            </div>
+
+            <!-- Items Grid -->
+            <div id="itemsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Items will be populated by JavaScript -->
+            </div>
+
+            <!-- Leaderboard -->
+            <div id="leaderboard" class="hidden">
+                <div class="item-card rounded-lg p-6 text-white mb-6">
+                    <h2 class="text-2xl font-bold mb-4">🏆 Leaderboard</h2>
+                    <div class="flex justify-center space-x-4 mb-4">
+                        <button class="leaderboard-tab bg-blue-500 px-4 py-2 rounded" data-period="daily">Daily</button>
+                        <button class="leaderboard-tab bg-gray-500 px-4 py-2 rounded" data-period="weekly">Weekly</button>
+                        <button class="leaderboard-tab bg-gray-500 px-4 py-2 rounded" data-period="alltime">All-time</button>
+                    </div>
+                    <div id="leaderboardList"></div>
+                    <div class="mt-4">
+                        <input type="text" id="playerName" placeholder="Enter your nickname" class="bg-black bg-opacity-30 text-white p-2 rounded mr-2">
+                        <button id="saveScore" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">Save Score</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Share Modal -->
+        <div id="shareModal" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center">
+            <div class="bg-white rounded-lg p-8 text-center max-w-md">
+                <h2 class="text-2xl font-bold mb-4">🎉 Share Your Score!</h2>
+                <canvas id="shareCard" width="400" height="600" class="mb-4 rounded-lg"></canvas>
+                <div class="flex space-x-2">
+                    <button id="shareWhatsApp" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex-1">
+                        <i class="fab fa-whatsapp mr-2"></i>WhatsApp
+                    </button>
+                    <button id="shareTwitter" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex-1">
+                        <i class="fab fa-twitter mr-2"></i>Twitter
+                    </button>
+                </div>
+                <button id="closeShare" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg mt-2 w-full">
+                    Close
+                </button>
+            </div>
+        </div>
+
+        <!-- Confetti Container -->
+        <div id="confetti" class="confetti"></div>
+    </div>
+
+    <div>
+      <footer class="footer">
+      <a href="privacy-policy.html">Privacy Policy</a> | 
+      <a href="terms.html">Terms of Service</a> | 
+      <a href="aboutus.html">About Us</a> | 
+      <a href="contact.html">Contact</a>
+    </footer>
+    </div>
+
+    <script>
+        // Game State
+        let gameState = {
+            moneyLeft: 1000000000000000, // 1000 trillion
+            totalSpent: 0,
+            itemsBought: 0,
+            currentCategory: 'all',
+            timerMode: false,
+            timerLeft: 60,
+            timerInterval: null,
+            playerName: '',
+            globalSpent: 894200000000
+        };
+
+        // Game Items Data
+        const gameItems = [
+            // Real Estate
+            { id: 1, name: "Ambani's House", price: 1000000000000, category: "realestate", icon: "🏰", caption: "Why live small when you can live HUGE!", unlocked: true },
+            { id: 2, name: "Buy Manhattan", price: 5000000000000, category: "realestate", icon: "🏙️", caption: "Own the Big Apple! Literally!", unlocked: true },
+            { id: 3, name: "Buckingham Palace", price: 2000000000000, category: "realestate", icon: "👑", caption: "Become neighbors with the Queen!", unlocked: true },
+            { id: 4, name: "Private Island Chain", price: 500000000000, category: "realestate", icon: "🏝️", caption: "Why have one island when you can have 50?", unlocked: true },
+            
+            // Vehicles
+            { id: 5, name: "Bugatti Collection (100 cars)", price: 30000000000, category: "vehicles", icon: "🏎️", caption: "One for each day... of the century!", unlocked: true },
+            { id: 6, name: "Private Boeing 787", price: 25000000000, category: "vehicles", icon: "✈️", caption: "First class? You ARE the class!", unlocked: true },
+            { id: 7, name: "Space Yacht", price: 100000000000, category: "vehicles", icon: "🚀", caption: "Cruise the cosmos in style!", unlocked: true },
+            { id: 8, name: "Submarine Fleet", price: 75000000000, category: "vehicles", icon: "🚢", caption: "Rule the seven seas!", unlocked: true },
+            
+            // Celebrities
+            { id: 9, name: "Hire Elon Musk", price: 50000000000, category: "celebrities", icon: "🤖", caption: "Make him build you a rocket... to Mars!", unlocked: true },
+            { id: 10, name: "Private Taylor Swift Concert", price: 2000000000, category: "celebrities", icon: "🎤", caption: "Shake it off... in your backyard!", unlocked: true },
+            { id: 11, name: "Buy Tom Cruise's Stunts", price: 1000000000, category: "celebrities", icon: "🎬", caption: "He'll do your grocery shopping... dangling from a helicopter!", unlocked: true },
+            { id: 12, name: "Hire The Rock as Butler", price: 5000000000, category: "celebrities", icon: "💪", caption: "Can you smell what The Rock is cooking? Your dinner!", unlocked: true },
+            
+            // Planets
+            { id: 13, name: "Buy Mars", price: 50000000000000, category: "planets", icon: "🔴", caption: "Red planet? More like YOUR planet!", unlocked: true },
+            { id: 14, name: "Custom Moon", price: 100000000000000, category: "planets", icon: "🌙", caption: "Why settle for Earth's moon when you can build your own?", unlocked: true },
+            { id: 15, name: "Jupiter's Ring Collection", price: 25000000000000, category: "planets", icon: "💍", caption: "Bling that's literally astronomical!", unlocked: true },
+            { id: 16, name: "Personal Solar System", price: 200000000000000, category: "planets", icon: "☀️", caption: "Be the center of your own universe!", unlocked: true },
+            
+            // Companies
+            { id: 17, name: "Buy Google", price: 90000000000000, category: "companies", icon: "🔍", caption: "Finally, YOU'LL know everything!", unlocked: true },
+            { id: 18, name: "Purchase Apple", price: 150000000000000, category: "companies", icon: "🍎", caption: "Think different? Think BIGGER!", unlocked: true },
+            { id: 19, name: "Own Netflix", price: 15000000000000, category: "companies", icon: "📺", caption: "Binge-watch your own empire!", unlocked: true },
+            { id: 20, name: "Buy Amazon", price: 100000000000000, category: "companies", icon: "📦", caption: "Free shipping... on EVERYTHING!", unlocked: true },
+            
+            // Crazy Stuff
+            { id: 21, name: "Adopt a Dinosaur", price: 30000000000, category: "crazy", icon: "🦕", caption: "T-Rex makes a great guard dog!", unlocked: true },
+            { id: 22, name: "Buy a Country (Nauru)", price: 200000000000, category: "crazy", icon: "🏛️", caption: "Population: You and your pet dinosaur!", unlocked: true },
+            { id: 23, name: "Commission the Great Wall of You", price: 500000000000, category: "crazy", icon: "🏯", caption: "Visible from space... just like your ego!", unlocked: true },
+            { id: 24, name: "Create Your Own Language", price: 5000000000, category: "crazy", icon: "📝", caption: "Finally, people will speak YOUR language!", unlocked: true },
+            
+            // Easter Eggs
+            { id: 25, name: "Zuckerberg's Soul", price: 999999999999999, category: "crazy", icon: "👻", caption: "Calculating emotions... Error 404: Soul not found!", unlocked: true, isEasterEgg: true },
+            { id: 26, name: "World Peace", price: 0, category: "crazy", icon: "☮️", caption: "Sorry, not for sale. Some things are priceless!", unlocked: true, isEasterEgg: true },
+            { id: 27, name: "Meaning of Life", price: 42000000000, category: "crazy", icon: "🤔", caption: "42 billion rupees for the answer to everything!", unlocked: true, isEasterEgg: true },
+            
+            // Unlockables
+            { id: 28, name: "Mars Base Alpha", price: 1000000000000000, category: "planets", icon: "🚀", caption: "Your personal space colony awaits!", unlocked: false, unlockCondition: "totalSpent", unlockValue: 1000000000000 },
+            { id: 29, name: "Buy YouTube", price: 50000000000000, category: "companies", icon: "📹", caption: "Control what the world watches!", unlocked: false, unlockCondition: "days", unlockValue: 3 },
+            { id: 30, name: "Time Machine", price: 500000000000000, category: "crazy", icon: "⏰", caption: "Go back and spend money FASTER!", unlocked: false, unlockCondition: "totalSpent", unlockValue: 500000000000000 }
+        ];
+
+        // Initialize Game
+        function initGame() {
+            updateDisplay();
+            renderItems();
+            setupEventListeners();
+            loadLeaderboard();
+            setInterval(updateGlobalCounter, 1000);
+            
+            // Check for challenge mode from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('mode') === 'challenge') {
+                const challengeScore = urlParams.get('score');
+                showChallengeMessage(challengeScore);
+            }
+        }
+
+        function resetMoney() {
+            // Reset game state to initial values
+            gameState.moneyLeft = 1000000000000000; // 1000 trillion
+            gameState.totalSpent = 0;
+            gameState.itemsBought = 0;
+            
+            // Reset unlockable items
+            gameItems.forEach(item => {
+                if (item.unlockCondition) {
+                    item.unlocked = false;
+                }
+            });
+            
+            // Update display and re-render items
+            updateDisplay();
+            renderItems();
+            
+            // Clear progress from localStorage but keep leaderboard
+            localStorage.removeItem('howrich_progress');
+            
+            // Show reset confirmation
+            showResetNotification();
+        }
+
+        function showResetNotification() {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-20 right-4 bg-green-500 text-white p-4 rounded-lg z-50 transform translate-x-full transition-transform';
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <span class="text-2xl mr-2">🔄</span>
+                    <div>
+                        <div class="font-bold">Money Reset!</div>
+                        <div class="text-sm">Fresh ₹1000 Trillion ready to spend!</div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => notification.classList.remove('translate-x-full'), 100);
+            
+            // Animate out
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        function updateDisplay() {
+            document.getElementById('moneyLeft').textContent = formatMoney(gameState.moneyLeft);
+            document.getElementById('totalSpent').textContent = formatMoney(gameState.totalSpent);
+            document.getElementById('itemsBought').textContent = gameState.itemsBought;
+            updateRank();
+        }
+
+        function formatMoney(amount) {
+            if (amount >= 10000000000000) { // 10 trillion+
+                return `₹${(amount / 1000000000000).toFixed(1)}T`;
+            } else if (amount >= 10000000000) { // 10 billion+
+                return `₹${(amount / 1000000000).toFixed(1)}B`;
+            } else if (amount >= 10000000) { // 10 million+
+                return `₹${(amount / 10000000).toFixed(1)}Cr`;
+            } else if (amount >= 100000) { // 1 lakh+
+                return `₹${(amount / 100000).toFixed(1)}L`;
+            } else {
+                return `₹${amount.toLocaleString('en-IN')}`;
+            }
+        }
+
+        function renderItems() {
+            const grid = document.getElementById('itemsGrid');
+            const items = gameState.currentCategory === 'all' 
+                ? gameItems.filter(item => item.unlocked || checkUnlockCondition(item))
+                : gameItems.filter(item => (item.unlocked || checkUnlockCondition(item)) && item.category === gameState.currentCategory);
+            
+            grid.innerHTML = items.map(item => `
+                <div class="item-card rounded-lg p-6 text-white cursor-pointer ${!item.unlocked && !checkUnlockCondition(item) ? 'opacity-50' : ''}" 
+                     data-item-id="${item.id}">
+                    <div class="text-4xl mb-3">${item.icon}</div>
+                    <h3 class="text-xl font-bold mb-2">${item.name}</h3>
+                    <div class="text-2xl font-bold text-green-400 mb-2">${formatMoney(item.price)}</div>
+                    <p class="text-sm opacity-75 mb-3">${item.caption}</p>
+                    ${!item.unlocked && !checkUnlockCondition(item) ? `
+                        <div class="text-xs bg-red-500 px-2 py-1 rounded">
+                            🔒 ${getUnlockText(item)}
+                        </div>
+                    ` : `
+                        <button class="bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-bold py-2 px-4 rounded-lg w-full">
+                            ${item.isEasterEgg ? '???' : 'BUY NOW'}
+                        </button>
+                    `}
+                </div>
+            `).join('');
+        }
+
+        function checkUnlockCondition(item) {
+            if (item.unlocked) return true;
+            if (!item.unlockCondition) return false;
+            
+            switch (item.unlockCondition) {
+                case 'totalSpent':
+                    return gameState.totalSpent >= item.unlockValue;
+                case 'days':
+                    // Simulate days for demo - in real app, track actual days
+                    return Math.floor(gameState.totalSpent / 10000000000000) >= item.unlockValue;
+                default:
+                    return false;
+            }
+        }
+
+        function getUnlockText(item) {
+            switch (item.unlockCondition) {
+                case 'totalSpent':
+                    return `Unlock at ${formatMoney(item.unlockValue)} spent`;
+                case 'days':
+                    return `Available after ${item.unlockValue} days`;
+                default:
+                    return 'Locked';
+            }
+        }
+
+        function buyItem(itemId) {
+            const item = gameItems.find(i => i.id === itemId);
+            if (!item || (!item.unlocked && !checkUnlockCondition(item))) return;
+            
+            if (item.isEasterEgg) {
+                showEasterEgg(item);
+                return;
+            }
+            
+            if (gameState.moneyLeft >= item.price) {
+                gameState.moneyLeft -= item.price;
+                gameState.totalSpent += item.price;
+                gameState.itemsBought++;
+                gameState.globalSpent += item.price;
+                
+                // Unlock items based on spending
+                gameItems.forEach(gameItem => {
+                    if (!gameItem.unlocked && checkUnlockCondition(gameItem)) {
+                        gameItem.unlocked = true;
+                        showUnlockNotification(gameItem);
+                    }
+                });
+                
+                updateDisplay();
+                showPurchaseEffect(item);
+                saveProgress();
+                
+                // Check win condition
+                if (gameState.totalSpent >= 1000000000000000) {
+                    showWinScreen();
+                }
+            } else {
+                showInsufficientFunds();
+            }
+        }
+
+        function showEasterEgg(item) {
+            if (item.name === "Zuckerberg's Soul") {
+                alert("Calculating emotions... Error 404: Soul not found! 🤖");
+            } else if (item.name === "World Peace") {
+                alert("Sorry, not for sale. Some things are priceless! ☮️");
+            } else if (item.name === "Meaning of Life") {
+                if (gameState.moneyLeft >= item.price) {
+                    gameState.moneyLeft -= item.price;
+                    gameState.totalSpent += item.price;
+                    gameState.itemsBought++;
+                    updateDisplay();
+                    alert("Congratulations! The answer to everything is... 42! 🤔");
+                }
+            }
+        }
+
+        function showPurchaseEffect(item) {
+            // Create purchase notification
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-20 right-4 bg-green-500 text-white p-4 rounded-lg z-50 transform translate-x-full transition-transform';
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <span class="text-2xl mr-2">${item.icon}</span>
+                    <div>
+                        <div class="font-bold">${item.name}</div>
+                        <div class="text-sm">Purchased for ${formatMoney(item.price)}</div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => notification.classList.remove('translate-x-full'), 100);
+            
+            // Animate out
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        function showUnlockNotification(item) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-32 right-4 bg-yellow-500 text-white p-4 rounded-lg z-50 transform translate-x-full transition-transform';
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <span class="text-2xl mr-2">🔓</span>
+                    <div>
+                        <div class="font-bold">New Item Unlocked!</div>
+                        <div class="text-sm">${item.name}</div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.remove('translate-x-full'), 100);
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+        }
+
+        function showInsufficientFunds() {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-20 right-4 bg-red-500 text-white p-4 rounded-lg z-50 transform translate-x-full transition-transform';
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <span class="text-2xl mr-2">💸</span>
+                    <div>
+                        <div class="font-bold">Insufficient Funds!</div>
+                        <div class="text-sm">You need more money to buy this!</div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.remove('translate-x-full'), 100);
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => notification.remove(), 300);
+            }, 2000);
+        }
+
+        function showWinScreen() {
+            createConfetti();
+            setTimeout(() => {
+                document.getElementById('shareModal').classList.remove('hidden');
+                generateShareCard();
+            }, 1000);
+        }
+
+        function createConfetti() {
+            const confetti = document.getElementById('confetti');
+            confetti.innerHTML = '';
+            
+            for (let i = 0; i < 50; i++) {
+                const confettiPiece = document.createElement('div');
+                confettiPiece.style.cssText = `
+                    position: absolute;
+                    width: 10px;
+                    height: 10px;
+                    background: ${['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff'][Math.floor(Math.random() * 5)]};
+                    left: ${Math.random() * 100}%;
+                    animation: fall ${Math.random() * 3 + 2}s linear infinite;
+                `;
+                confetti.appendChild(confettiPiece);
+            }
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fall {
+                    to {
+                        transform: translateY(100vh) rotate(360deg);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            setTimeout(() => {
+                confetti.innerHTML = '';
+                style.remove();
+            }, 5000);
+        }
+
+        function generateShareCard() {
+            const canvas = document.getElementById('shareCard');
+            const ctx = canvas.getContext('2d');
+            
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, 600);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 400, 600);
+            
+            // Title
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 32px Poppins';
+            ctx.textAlign = 'center';
+            ctx.fillText('I SPENT', 200, 100);
+            
+            // Amount
+            ctx.font = 'bold 48px Poppins';
+            ctx.fillStyle = '#feca57';
+            ctx.fillText(formatMoney(gameState.totalSpent), 200, 180);
+            
+            // Time/items
+            ctx.font = '24px Poppins';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText(`${gameState.itemsBought} items bought`, 200, 220);
+            
+            // Challenge text
+            ctx.font = 'bold 28px Poppins';
+            ctx.fillText('Can you beat me?', 200, 300);
+            
+            // Emoji
+            ctx.font = '80px sans-serif';
+            ctx.fillText('💰', 200, 400);
+            
+            // Website
+            ctx.font = 'bold 24px Poppins';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText('Play now at HowRich.in', 200, 500);
+            
+            // Items showcase
+            ctx.font = '16px Poppins';
+            ctx.fillStyle = '#ffffff';
+            const topItems = gameItems
+                .filter(item => gameState.totalSpent >= item.price)
+                .sort((a, b) => b.price - a.price)
+                .slice(0, 3);
+            
+            topItems.forEach((item, index) => {
+                ctx.fillText(`${item.icon} ${item.name}`, 200, 530 + (index * 20));
+            });
+        }
+
+        function updateGlobalCounter() {
+            gameState.globalSpent += Math.floor(Math.random() * 1000000000) + 500000000;
+            document.getElementById('globalCounter').textContent = gameState.globalSpent.toLocaleString('en-IN');
+        }
+
+        function setupEventListeners() {
+            // Item purchases
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('[data-item-id]')) {
+                    const itemId = parseInt(e.target.closest('[data-item-id]').dataset.itemId);
+                    buyItem(itemId);
+                }
+            });
+            
+            // Reset money button
+            document.getElementById('resetMoneyBtn').addEventListener('click', () => {
+                document.getElementById('resetModal').classList.remove('hidden');
+            });
+            
+            // Reset confirmation
+            document.getElementById('confirmReset').addEventListener('click', () => {
+                resetMoney();
+                document.getElementById('resetModal').classList.add('hidden');
+            });
+            
+            document.getElementById('cancelReset').addEventListener('click', () => {
+                document.getElementById('resetModal').classList.add('hidden');
+            });
+            
+            // Category tabs
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    if (tab.dataset.category === 'leaderboard') {
+                        document.getElementById('itemsGrid').classList.add('hidden');
+                        document.getElementById('leaderboard').classList.remove('hidden');
+                        loadLeaderboard();
+                    } else {
+                        document.getElementById('itemsGrid').classList.remove('hidden');
+                        document.getElementById('leaderboard').classList.add('hidden');
+                        gameState.currentCategory = tab.dataset.category;
+                        renderItems();
+                    }
+                });
+            });
+            
+            // Timer mode
+            document.getElementById('timerModeBtn').addEventListener('click', () => {
+                document.getElementById('timerMode').classList.remove('hidden');
+            });
+            
+            document.getElementById('closeTimer').addEventListener('click', () => {
+                document.getElementById('timerMode').classList.add('hidden');
+                stopTimer();
+            });
+            
+            document.getElementById('startTimer').addEventListener('click', startTimerChallenge);
+            
+            // Share modal
+            document.getElementById('closeShare').addEventListener('click', () => {
+                document.getElementById('shareModal').classList.add('hidden');
+            });
+            
+            document.getElementById('shareWhatsApp').addEventListener('click', () => {
+                const text = `I spent ${formatMoney(gameState.totalSpent)} in HowRich.in! Can you beat me? Play now: ${window.location.origin}`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
+            });
+            
+            document.getElementById('shareTwitter').addEventListener('click', () => {
+                const text = `I spent ${formatMoney(gameState.totalSpent)} in HowRich.in! Can you beat me? 💰🎮`;
+                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${window.location.origin}`);
+            });
+            
+            // Leaderboard
+            document.getElementById('saveScore').addEventListener('click', saveToLeaderboard);
+            
+            document.querySelectorAll('.leaderboard-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.leaderboard-tab').forEach(t => {
+                        t.classList.remove('bg-blue-500');
+                        t.classList.add('bg-gray-500');
+                    });
+                    tab.classList.remove('bg-gray-500');
+                    tab.classList.add('bg-blue-500');
+                    loadLeaderboard(tab.dataset.period);
+                });
+            });
+        }
+
+        function startTimerChallenge() {
+            gameState.timerMode = true;
+            gameState.timerLeft = 60;
+            const startSpent = gameState.totalSpent;
+            
+            document.getElementById('timerDisplay').textContent = gameState.timerLeft;
+            
+            gameState.timerInterval = setInterval(() => {
+                gameState.timerLeft--;
+                document.getElementById('timerDisplay').textContent = gameState.timerLeft;
+                
+                if (gameState.timerLeft <= 0) {
+                    stopTimer();
+                    const spentInChallenge = gameState.totalSpent - startSpent;
+                    const targetAmount = 100000000000; // 1000 Cr
+                    
+                    if (spentInChallenge >= targetAmount) {
+                        alert(`🎉 Amazing! You spent ${formatMoney(spentInChallenge)} in 60 seconds! Challenge completed!`);
+                    } else {
+                        alert(`You spent ${formatMoney(spentInChallenge)} in 60 seconds. Target was ${formatMoney(targetAmount)}. Try again!`);
+                    }
+                    
+                    document.getElementById('timerMode').classList.add('hidden');
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (gameState.timerInterval) {
+                clearInterval(gameState.timerInterval);
+                gameState.timerInterval = null;
+            }
+            gameState.timerMode = false;
+        }
+
+        function saveToLeaderboard() {
+            const name = document.getElementById('playerName').value.trim();
+            if (!name) {
+                alert('Please enter your nickname!');
+                return;
+            }
+            
+            gameState.playerName = name;
+            const scores = JSON.parse(localStorage.getItem('howrich_scores') || '[]');
+            scores.push({
+                name: name,
+                score: gameState.totalSpent,
+                items: gameState.itemsBought,
+                date: new Date().toISOString()
+            });
+            
+            localStorage.setItem('howrich_scores', JSON.stringify(scores));
+            loadLeaderboard();
+            alert('Score saved! 🏆');
+        }
+
+        function loadLeaderboard(period = 'daily') {
+            const scores = JSON.parse(localStorage.getItem('howrich_scores') || '[]');
+            let filteredScores = scores;
+            
+            const now = new Date();
+            if (period === 'daily') {
+                filteredScores = scores.filter(score => {
+                    const scoreDate = new Date(score.date);
+                    return scoreDate.toDateString() === now.toDateString();
+                });
+            } else if (period === 'weekly') {
+                const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                filteredScores = scores.filter(score => new Date(score.date) >= weekAgo);
+            }
+            
+            filteredScores.sort((a, b) => b.score - a.score);
+            const top10 = filteredScores.slice(0, 10);
+            
+            const leaderboardHtml = top10.map((score, index) => `
+                <div class="flex justify-between items-center p-2 ${index < 3 ? 'bg-yellow-500 bg-opacity-20' : 'bg-black bg-opacity-20'} rounded mb-2">
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-2">${index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}</span>
+                        <span class="font-semibold">${score.name}</span>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-bold">${formatMoney(score.score)}</div>
+                        <div class="text-xs opacity-75">${score.items} items</div>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('leaderboardList').innerHTML = leaderboardHtml || '<div class="text-center opacity-75">No scores yet!</div>';
+        }
+
+        function updateRank() {
+            const scores = JSON.parse(localStorage.getItem('howrich_scores') || '[]');
+            if (gameState.playerName && scores.length > 0) {
+                const userScores = scores.filter(s => s.name === gameState.playerName);
+                if (userScores.length > 0) {
+                    const userBest = Math.max(...userScores.map(s => s.score));
+                    const allScores = scores.map(s => s.score).sort((a, b) => b - a);
+                    const rank = allScores.indexOf(userBest) + 1;
+                    document.getElementById('userRank').textContent = `#${rank}`;
+                }
+            }
+        }
+
+        function saveProgress() {
+            localStorage.setItem('howrich_progress', JSON.stringify({
+                moneyLeft: gameState.moneyLeft,
+                totalSpent: gameState.totalSpent,
+                itemsBought: gameState.itemsBought,
+                playerName: gameState.playerName
+            }));
+        }
+
+        function loadProgress() {
+            const saved = JSON.parse(localStorage.getItem('howrich_progress') || '{}');
+            if (saved.totalSpent) {
+                gameState.moneyLeft = saved.moneyLeft;
+                gameState.totalSpent = saved.totalSpent;
+                gameState.itemsBought = saved.itemsBought;
+                gameState.playerName = saved.playerName || '';
+                
+                if (gameState.playerName) {
+                    document.getElementById('playerName').value = gameState.playerName;
+                }
+            }
+        }
+
+        function showChallengeMessage(challengeScore) {
+            alert(`Your friend spent ₹${challengeScore}! Can you beat them? 🚀`);
+        }
+
+        // Initialize game when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProgress();
+            initGame();
+        });
+    </script>
+</body>
+</html>

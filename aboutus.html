@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About Us | HowRich</title>
+  <link rel="stylesheet" href="stylesheet">
+  <style>
+    body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f6f9fc;
+  color: #333;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 700px;
+  margin: 60px auto;
+  padding: 20px;
+  text-align: center;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+  animation: slideUp 0.6s ease-out;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1s ease forwards;
+}
+
+.delay-1 { animation-delay: 0.5s; }
+.delay-2 { animation-delay: 1s; }
+.delay-3 { animation-delay: 1.5s; }
+.delay-4 { animation-delay: 2s; }
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="fade-in">About Us</h1>
+    <p class="fade-in delay-1">
+      Welcome to <strong>HowRich.in</strong> – the most fun and light-hearted way to experience spending wealth beyond imagination.
+    </p>
+    <p class="fade-in delay-2">
+      We built this game to let your imagination run wild and have some good laughs along the way. Our goal is simple – help you kill boredom while pretending to be a trillionaire.
+    </p>
+    <p class="fade-in delay-3">
+      Behind HowRich is a solo boy of dreams, develops, and designs who believe that fun can go hand-in-hand with creativity and great user experience.
+    </p>
+    <p class="fade-in delay-4">Thank you for being a part of this journey. 🎉</p>
+  </div>
+</body>
+</html>
