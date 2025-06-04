@@ -1,23 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Spend trillions in this addictive simulation! Compete, have fun, and find out how rich you could be.">
-    <meta name="keywords" content="how rich, spend money game, billionaires, trillionaire, fun simulation, timepass game, spend simulator">
+    <meta name="description"
+        content="Spend trillions in this addictive simulation! Compete, have fun, and find out how rich you could be.">
+    <meta name="keywords"
+        content="how rich, spend money game, billionaires, trillionaire, fun simulation, timepass game, spend simulator">
     <meta name="author" content="HowRich.in Team">
     <title>HowRich.in - Spend ₹1000 Trillion</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap');
-        
+
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
         }
-        
+
         .money-counter {
             background: linear-gradient(45deg, #ff6b6b, #feca57);
             -webkit-background-clip: text;
@@ -25,45 +28,52 @@
             background-clip: text;
             animation: pulse 2s infinite;
         }
-        
+
         @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
         }
-        
+
         .item-card {
             transition: all 0.3s ease;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        
+
         .item-card:hover {
             transform: translateY(-5px);
             background: rgba(255, 255, 255, 0.2);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
-        
+
         .category-tab {
             transition: all 0.3s ease;
         }
-        
+
         .category-tab.active {
             background: linear-gradient(45deg, #ff6b6b, #feca57);
             color: white;
         }
-        
+
         .global-counter {
             background: linear-gradient(45deg, #4facfe, #00f2fe);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        
+
         .share-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-        
+
         .confetti {
             position: fixed;
             top: 0;
@@ -73,38 +83,98 @@
             pointer-events: none;
             z-index: 1000;
         }
-        
+
         .reset-button {
             background: linear-gradient(45deg, #ff4757, #ff3838);
             transition: all 0.3s ease;
         }
-        
+
         .reset-button:hover {
             background: linear-gradient(45deg, #ff3838, #ff2f1f);
             transform: scale(1.05);
         }
+
         .footer {
             text-align: center;
             color: gold;
         }
+
+        /* Hide the original buttons and show 3-dot on mobile */
+        @media (max-width: 767px) {
+            #buttonGroup {
+                display: none;
+                /* hide buttons by default on mobile */
+                position: absolute;
+                top: 50px;
+                right: 0;
+                background: rgba(0, 0, 0, 0.8);
+                padding: 8px;
+                border-radius: 8px;
+                flex-direction: column;
+                width: max-content;
+                z-index: 1000;
+            }
+
+            #buttonGroup.show {
+                display: flex;
+                /* show when toggled */
+            }
+
+            .mobile-menu-btn {
+                display: block;
+                /* show menu button on mobile */
+                font-size: 24px;
+                color: white;
+            }
+        }
+
+        /* On tablets and desktops keep original layout */
+        @media (min-width: 768px) {
+            #buttonGroup {
+                position: static;
+                display: flex !important;
+                flex-direction: row;
+                width: auto;
+                background: none;
+                padding: 0;
+            }
+
+            .mobile-menu-btn {
+                display: none !important;
+            }
+        }
     </style>
 </head>
+
 <body>
     <div id="app" class="min-h-screen">
         <!-- Header -->
         <header class="bg-black bg-opacity-20 backdrop-filter backdrop-blur-lg text-white p-4">
             <div class="container mx-auto flex justify-between items-center">
                 <h1 class="text-3xl font-bold">HowRich.in</h1>
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-4 relative">
+
                     <div class="text-right">
                         <div class="text-sm opacity-75">Money Left</div>
                         <div id="moneyLeft" class="text-2xl font-bold money-counter">₹1,000,000,000,000,000</div>
                     </div>
-                    <button id="resetMoneyBtn" class="reset-button text-white px-4 py-2 rounded-lg font-semibold">
-                        <i class="fas fa-redo mr-2"></i>Reset Money
-                    </button>
-                    <button id="timerModeBtn" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg font-semibold">
-                        <i class="fas fa-clock mr-2"></i>Timer Challenge
+
+                    <!-- Original buttons container -->
+                    <div id="buttonGroup" class="flex items-center space-x-2">
+                        <button id="resetMoneyBtn" class="reset-button text-white px-4 py-2 rounded-lg font-semibold">
+                            <i class="fas fa-redo mr-2"></i>Reset Money
+                        </button>
+                        <button id="timerModeBtn"
+                            class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg font-semibold">
+                            <i class="fas fa-clock mr-2"></i>Timer Challenge
+                        </button>
+                    </div>
+
+                    <!-- 3-dot menu button for mobile -->
+                    <button id="menuToggleBtn"
+                        class="mobile-menu-btn hidden ml-2 p-2 rounded-lg hover:bg-gray-700 focus:outline-none"
+                        aria-label="Toggle Menu">
+                        &#x22EE; <!-- Vertical ellipsis unicode -->
                     </button>
                 </div>
             </div>
@@ -123,7 +193,8 @@
                 <h2 class="text-2xl font-bold mb-4">Timer Challenge!</h2>
                 <p class="mb-4">Spend ₹1000 Cr in 60 seconds!</p>
                 <div id="timerDisplay" class="text-4xl font-bold text-red-500 mb-4">60</div>
-                <button id="startTimer" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold">
+                <button id="startTimer"
+                    class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold">
                     Start Challenge!
                 </button>
                 <button id="closeTimer" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg ml-2">
@@ -137,12 +208,15 @@
             <div class="bg-white rounded-lg p-8 text-center max-w-md">
                 <h2 class="text-2xl font-bold mb-4">🔄 Reset Money?</h2>
                 <p class="mb-4">Are you sure you want to reset your money to ₹1000 Trillion?</p>
-                <p class="mb-6 text-sm text-gray-600">This will reset your current spending session but keep your leaderboard scores!</p>
+                <p class="mb-6 text-sm text-gray-600">This will reset your current spending session but keep your
+                    leaderboard scores!</p>
                 <div class="flex space-x-4">
-                    <button id="confirmReset" class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-semibold flex-1">
+                    <button id="confirmReset"
+                        class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-semibold flex-1">
                         Yes, Reset!
                     </button>
-                    <button id="cancelReset" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold flex-1">
+                    <button id="cancelReset"
+                        class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold flex-1">
                         Cancel
                     </button>
                 </div>
@@ -172,14 +246,22 @@
 
             <!-- Navigation Tabs -->
             <div class="flex flex-wrap justify-center mb-8">
-                <button class="category-tab active px-4 py-2 mx-1 mb-2 rounded-lg text-white font-semibold" data-category="all">All Items</button>
-                <button class="category-tab px-4 py-2 mx-1 mb-2 rounded-lg text-white font-semibold" data-category="realestate">Real Estate</button>
-                <button class="category-tab px-4 py-2 mx-1 mb-2 rounded-lg text-white font-semibold" data-category="vehicles">Vehicles</button>
-                <button class="category-tab px-4 py-2 mx-1 mb-2 rounded-lg text-white font-semibold" data-category="celebrities">Celebrities</button>
-                <button class="category-tab px-4 py-2 mx-1 mb-2 rounded-lg text-white font-semibold" data-category="planets">Planets</button>
-                <button class="category-tab px-4 py-2 mx-1 mb-2 rounded-lg text-white font-semibold" data-category="companies">Companies</button>
-                <button class="category-tab px-4 py-2 mx-1 mb-2 rounded-lg text-white font-semibold" data-category="crazy">Crazy Stuff</button>
-                <button class="category-tab px-4 py-2 mx-1 mb-2 rounded-lg text-white font-semibold" data-category="leaderboard">Leaderboard</button>
+                <button class="category-tab active px-4 py-2 mx-1 mb-2 rounded-lg text-white font-semibold"
+                    data-category="all">All Items</button>
+                <button class="category-tab px-4 py-2 mx-1 mb-2 rounded-lg text-white font-semibold"
+                    data-category="realestate">Real Estate</button>
+                <button class="category-tab px-4 py-2 mx-1 mb-2 rounded-lg text-white font-semibold"
+                    data-category="vehicles">Vehicles</button>
+                <button class="category-tab px-4 py-2 mx-1 mb-2 rounded-lg text-white font-semibold"
+                    data-category="celebrities">Celebrities</button>
+                <button class="category-tab px-4 py-2 mx-1 mb-2 rounded-lg text-white font-semibold"
+                    data-category="planets">Planets</button>
+                <button class="category-tab px-4 py-2 mx-1 mb-2 rounded-lg text-white font-semibold"
+                    data-category="companies">Companies</button>
+                <button class="category-tab px-4 py-2 mx-1 mb-2 rounded-lg text-white font-semibold"
+                    data-category="crazy">Crazy Stuff</button>
+                <button class="category-tab px-4 py-2 mx-1 mb-2 rounded-lg text-white font-semibold"
+                    data-category="leaderboard">Leaderboard</button>
             </div>
 
             <!-- Items Grid -->
@@ -193,13 +275,17 @@
                     <h2 class="text-2xl font-bold mb-4">🏆 Leaderboard</h2>
                     <div class="flex justify-center space-x-4 mb-4">
                         <button class="leaderboard-tab bg-blue-500 px-4 py-2 rounded" data-period="daily">Daily</button>
-                        <button class="leaderboard-tab bg-gray-500 px-4 py-2 rounded" data-period="weekly">Weekly</button>
-                        <button class="leaderboard-tab bg-gray-500 px-4 py-2 rounded" data-period="alltime">All-time</button>
+                        <button class="leaderboard-tab bg-gray-500 px-4 py-2 rounded"
+                            data-period="weekly">Weekly</button>
+                        <button class="leaderboard-tab bg-gray-500 px-4 py-2 rounded"
+                            data-period="alltime">All-time</button>
                     </div>
                     <div id="leaderboardList"></div>
                     <div class="mt-4">
-                        <input type="text" id="playerName" placeholder="Enter your nickname" class="bg-black bg-opacity-30 text-white p-2 rounded mr-2">
-                        <button id="saveScore" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">Save Score</button>
+                        <input type="text" id="playerName" placeholder="Enter your nickname"
+                            class="bg-black bg-opacity-30 text-white p-2 rounded mr-2">
+                        <button id="saveScore" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">Save
+                            Score</button>
                     </div>
                 </div>
             </div>
@@ -211,14 +297,17 @@
                 <h2 class="text-2xl font-bold mb-4">🎉 Share Your Score!</h2>
                 <canvas id="shareCard" width="400" height="600" class="mb-4 rounded-lg"></canvas>
                 <div class="flex space-x-2">
-                    <button id="shareWhatsApp" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex-1">
+                    <button id="shareWhatsApp"
+                        class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex-1">
                         <i class="fab fa-whatsapp mr-2"></i>WhatsApp
                     </button>
-                    <button id="shareTwitter" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex-1">
+                    <button id="shareTwitter"
+                        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex-1">
                         <i class="fab fa-twitter mr-2"></i>Twitter
                     </button>
                 </div>
-                <button id="closeShare" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg mt-2 w-full">
+                <button id="closeShare"
+                    class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg mt-2 w-full">
                     Close
                 </button>
             </div>
@@ -229,12 +318,12 @@
     </div>
 
     <div>
-      <footer class="footer">
-      <a href="privacy-policy.html">Privacy Policy</a> | 
-      <a href="terms.html">Terms of Service</a> | 
-      <a href="aboutus.html">About Us</a> | 
-      <a href="contact.html">Contact</a>
-    </footer>
+        <footer class="footer">
+            <a href="privacy-policy.html">Privacy Policy</a> |
+            <a href="terms.html">Terms of Service</a> |
+            <a href="aboutus.html">About Us</a> |
+            <a href="contact.html">Contact</a>
+        </footer>
     </div>
 
     <script>
@@ -258,42 +347,42 @@
             { id: 2, name: "Buy Manhattan", price: 5000000000000, category: "realestate", icon: "🏙️", caption: "Own the Big Apple! Literally!", unlocked: true },
             { id: 3, name: "Buckingham Palace", price: 2000000000000, category: "realestate", icon: "👑", caption: "Become neighbors with the Queen!", unlocked: true },
             { id: 4, name: "Private Island Chain", price: 500000000000, category: "realestate", icon: "🏝️", caption: "Why have one island when you can have 50?", unlocked: true },
-            
+
             // Vehicles
             { id: 5, name: "Bugatti Collection (100 cars)", price: 30000000000, category: "vehicles", icon: "🏎️", caption: "One for each day... of the century!", unlocked: true },
             { id: 6, name: "Private Boeing 787", price: 25000000000, category: "vehicles", icon: "✈️", caption: "First class? You ARE the class!", unlocked: true },
             { id: 7, name: "Space Yacht", price: 100000000000, category: "vehicles", icon: "🚀", caption: "Cruise the cosmos in style!", unlocked: true },
             { id: 8, name: "Submarine Fleet", price: 75000000000, category: "vehicles", icon: "🚢", caption: "Rule the seven seas!", unlocked: true },
-            
+
             // Celebrities
             { id: 9, name: "Hire Elon Musk", price: 50000000000, category: "celebrities", icon: "🤖", caption: "Make him build you a rocket... to Mars!", unlocked: true },
             { id: 10, name: "Private Taylor Swift Concert", price: 2000000000, category: "celebrities", icon: "🎤", caption: "Shake it off... in your backyard!", unlocked: true },
             { id: 11, name: "Buy Tom Cruise's Stunts", price: 1000000000, category: "celebrities", icon: "🎬", caption: "He'll do your grocery shopping... dangling from a helicopter!", unlocked: true },
             { id: 12, name: "Hire The Rock as Butler", price: 5000000000, category: "celebrities", icon: "💪", caption: "Can you smell what The Rock is cooking? Your dinner!", unlocked: true },
-            
+
             // Planets
             { id: 13, name: "Buy Mars", price: 50000000000000, category: "planets", icon: "🔴", caption: "Red planet? More like YOUR planet!", unlocked: true },
             { id: 14, name: "Custom Moon", price: 100000000000000, category: "planets", icon: "🌙", caption: "Why settle for Earth's moon when you can build your own?", unlocked: true },
             { id: 15, name: "Jupiter's Ring Collection", price: 25000000000000, category: "planets", icon: "💍", caption: "Bling that's literally astronomical!", unlocked: true },
             { id: 16, name: "Personal Solar System", price: 200000000000000, category: "planets", icon: "☀️", caption: "Be the center of your own universe!", unlocked: true },
-            
+
             // Companies
             { id: 17, name: "Buy Google", price: 90000000000000, category: "companies", icon: "🔍", caption: "Finally, YOU'LL know everything!", unlocked: true },
             { id: 18, name: "Purchase Apple", price: 150000000000000, category: "companies", icon: "🍎", caption: "Think different? Think BIGGER!", unlocked: true },
             { id: 19, name: "Own Netflix", price: 15000000000000, category: "companies", icon: "📺", caption: "Binge-watch your own empire!", unlocked: true },
             { id: 20, name: "Buy Amazon", price: 100000000000000, category: "companies", icon: "📦", caption: "Free shipping... on EVERYTHING!", unlocked: true },
-            
+
             // Crazy Stuff
             { id: 21, name: "Adopt a Dinosaur", price: 30000000000, category: "crazy", icon: "🦕", caption: "T-Rex makes a great guard dog!", unlocked: true },
             { id: 22, name: "Buy a Country (Nauru)", price: 200000000000, category: "crazy", icon: "🏛️", caption: "Population: You and your pet dinosaur!", unlocked: true },
             { id: 23, name: "Commission the Great Wall of You", price: 500000000000, category: "crazy", icon: "🏯", caption: "Visible from space... just like your ego!", unlocked: true },
             { id: 24, name: "Create Your Own Language", price: 5000000000, category: "crazy", icon: "📝", caption: "Finally, people will speak YOUR language!", unlocked: true },
-            
+
             // Easter Eggs
             { id: 25, name: "Zuckerberg's Soul", price: 999999999999999, category: "crazy", icon: "👻", caption: "Calculating emotions... Error 404: Soul not found!", unlocked: true, isEasterEgg: true },
             { id: 26, name: "World Peace", price: 0, category: "crazy", icon: "☮️", caption: "Sorry, not for sale. Some things are priceless!", unlocked: true, isEasterEgg: true },
             { id: 27, name: "Meaning of Life", price: 42000000000, category: "crazy", icon: "🤔", caption: "42 billion rupees for the answer to everything!", unlocked: true, isEasterEgg: true },
-            
+
             // Unlockables
             { id: 28, name: "Mars Base Alpha", price: 1000000000000000, category: "planets", icon: "🚀", caption: "Your personal space colony awaits!", unlocked: false, unlockCondition: "totalSpent", unlockValue: 1000000000000 },
             { id: 29, name: "Buy YouTube", price: 50000000000000, category: "companies", icon: "📹", caption: "Control what the world watches!", unlocked: false, unlockCondition: "days", unlockValue: 3 },
@@ -307,7 +396,7 @@
             setupEventListeners();
             loadLeaderboard();
             setInterval(updateGlobalCounter, 1000);
-            
+
             // Check for challenge mode from URL
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('mode') === 'challenge') {
@@ -321,21 +410,21 @@
             gameState.moneyLeft = 1000000000000000; // 1000 trillion
             gameState.totalSpent = 0;
             gameState.itemsBought = 0;
-            
+
             // Reset unlockable items
             gameItems.forEach(item => {
                 if (item.unlockCondition) {
                     item.unlocked = false;
                 }
             });
-            
+
             // Update display and re-render items
             updateDisplay();
             renderItems();
-            
+
             // Clear progress from localStorage but keep leaderboard
             localStorage.removeItem('howrich_progress');
-            
+
             // Show reset confirmation
             showResetNotification();
         }
@@ -353,10 +442,10 @@
                 </div>
             `;
             document.body.appendChild(notification);
-            
+
             // Animate in
             setTimeout(() => notification.classList.remove('translate-x-full'), 100);
-            
+
             // Animate out
             setTimeout(() => {
                 notification.classList.add('translate-x-full');
@@ -387,10 +476,10 @@
 
         function renderItems() {
             const grid = document.getElementById('itemsGrid');
-            const items = gameState.currentCategory === 'all' 
+            const items = gameState.currentCategory === 'all'
                 ? gameItems.filter(item => item.unlocked || checkUnlockCondition(item))
                 : gameItems.filter(item => (item.unlocked || checkUnlockCondition(item)) && item.category === gameState.currentCategory);
-            
+
             grid.innerHTML = items.map(item => `
                 <div class="item-card rounded-lg p-6 text-white cursor-pointer ${!item.unlocked && !checkUnlockCondition(item) ? 'opacity-50' : ''}" 
                      data-item-id="${item.id}">
@@ -414,7 +503,7 @@
         function checkUnlockCondition(item) {
             if (item.unlocked) return true;
             if (!item.unlockCondition) return false;
-            
+
             switch (item.unlockCondition) {
                 case 'totalSpent':
                     return gameState.totalSpent >= item.unlockValue;
@@ -440,18 +529,18 @@
         function buyItem(itemId) {
             const item = gameItems.find(i => i.id === itemId);
             if (!item || (!item.unlocked && !checkUnlockCondition(item))) return;
-            
+
             if (item.isEasterEgg) {
                 showEasterEgg(item);
                 return;
             }
-            
+
             if (gameState.moneyLeft >= item.price) {
                 gameState.moneyLeft -= item.price;
                 gameState.totalSpent += item.price;
                 gameState.itemsBought++;
                 gameState.globalSpent += item.price;
-                
+
                 // Unlock items based on spending
                 gameItems.forEach(gameItem => {
                     if (!gameItem.unlocked && checkUnlockCondition(gameItem)) {
@@ -459,11 +548,11 @@
                         showUnlockNotification(gameItem);
                     }
                 });
-                
+
                 updateDisplay();
                 showPurchaseEffect(item);
                 saveProgress();
-                
+
                 // Check win condition
                 if (gameState.totalSpent >= 1000000000000000) {
                     showWinScreen();
@@ -503,10 +592,10 @@
                 </div>
             `;
             document.body.appendChild(notification);
-            
+
             // Animate in
             setTimeout(() => notification.classList.remove('translate-x-full'), 100);
-            
+
             // Animate out
             setTimeout(() => {
                 notification.classList.add('translate-x-full');
@@ -527,7 +616,7 @@
                 </div>
             `;
             document.body.appendChild(notification);
-            
+
             setTimeout(() => notification.classList.remove('translate-x-full'), 100);
             setTimeout(() => {
                 notification.classList.add('translate-x-full');
@@ -548,7 +637,7 @@
                 </div>
             `;
             document.body.appendChild(notification);
-            
+
             setTimeout(() => notification.classList.remove('translate-x-full'), 100);
             setTimeout(() => {
                 notification.classList.add('translate-x-full');
@@ -567,7 +656,7 @@
         function createConfetti() {
             const confetti = document.getElementById('confetti');
             confetti.innerHTML = '';
-            
+
             for (let i = 0; i < 50; i++) {
                 const confettiPiece = document.createElement('div');
                 confettiPiece.style.cssText = `
@@ -580,7 +669,7 @@
                 `;
                 confetti.appendChild(confettiPiece);
             }
-            
+
             const style = document.createElement('style');
             style.textContent = `
                 @keyframes fall {
@@ -590,7 +679,7 @@
                 }
             `;
             document.head.appendChild(style);
-            
+
             setTimeout(() => {
                 confetti.innerHTML = '';
                 style.remove();
@@ -600,43 +689,43 @@
         function generateShareCard() {
             const canvas = document.getElementById('shareCard');
             const ctx = canvas.getContext('2d');
-            
+
             // Background gradient
             const gradient = ctx.createLinearGradient(0, 0, 0, 600);
             gradient.addColorStop(0, '#667eea');
             gradient.addColorStop(1, '#764ba2');
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, 400, 600);
-            
+
             // Title
             ctx.fillStyle = '#ffffff';
             ctx.font = 'bold 32px Poppins';
             ctx.textAlign = 'center';
             ctx.fillText('I SPENT', 200, 100);
-            
+
             // Amount
             ctx.font = 'bold 48px Poppins';
             ctx.fillStyle = '#feca57';
             ctx.fillText(formatMoney(gameState.totalSpent), 200, 180);
-            
+
             // Time/items
             ctx.font = '24px Poppins';
             ctx.fillStyle = '#ffffff';
             ctx.fillText(`${gameState.itemsBought} items bought`, 200, 220);
-            
+
             // Challenge text
             ctx.font = 'bold 28px Poppins';
             ctx.fillText('Can you beat me?', 200, 300);
-            
+
             // Emoji
             ctx.font = '80px sans-serif';
             ctx.fillText('💰', 200, 400);
-            
+
             // Website
             ctx.font = 'bold 24px Poppins';
             ctx.fillStyle = '#ffffff';
             ctx.fillText('Play now at HowRich.in', 200, 500);
-            
+
             // Items showcase
             ctx.font = '16px Poppins';
             ctx.fillStyle = '#ffffff';
@@ -644,7 +733,7 @@
                 .filter(item => gameState.totalSpent >= item.price)
                 .sort((a, b) => b.price - a.price)
                 .slice(0, 3);
-            
+
             topItems.forEach((item, index) => {
                 ctx.fillText(`${item.icon} ${item.name}`, 200, 530 + (index * 20));
             });
@@ -663,28 +752,28 @@
                     buyItem(itemId);
                 }
             });
-            
+
             // Reset money button
             document.getElementById('resetMoneyBtn').addEventListener('click', () => {
                 document.getElementById('resetModal').classList.remove('hidden');
             });
-            
+
             // Reset confirmation
             document.getElementById('confirmReset').addEventListener('click', () => {
                 resetMoney();
                 document.getElementById('resetModal').classList.add('hidden');
             });
-            
+
             document.getElementById('cancelReset').addEventListener('click', () => {
                 document.getElementById('resetModal').classList.add('hidden');
             });
-            
+
             // Category tabs
             document.querySelectorAll('.category-tab').forEach(tab => {
                 tab.addEventListener('click', () => {
                     document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
                     tab.classList.add('active');
-                    
+
                     if (tab.dataset.category === 'leaderboard') {
                         document.getElementById('itemsGrid').classList.add('hidden');
                         document.getElementById('leaderboard').classList.remove('hidden');
@@ -697,37 +786,37 @@
                     }
                 });
             });
-            
+
             // Timer mode
             document.getElementById('timerModeBtn').addEventListener('click', () => {
                 document.getElementById('timerMode').classList.remove('hidden');
             });
-            
+
             document.getElementById('closeTimer').addEventListener('click', () => {
                 document.getElementById('timerMode').classList.add('hidden');
                 stopTimer();
             });
-            
+
             document.getElementById('startTimer').addEventListener('click', startTimerChallenge);
-            
+
             // Share modal
             document.getElementById('closeShare').addEventListener('click', () => {
                 document.getElementById('shareModal').classList.add('hidden');
             });
-            
+
             document.getElementById('shareWhatsApp').addEventListener('click', () => {
                 const text = `I spent ${formatMoney(gameState.totalSpent)} in HowRich.in! Can you beat me? Play now: ${window.location.origin}`;
                 window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
             });
-            
+
             document.getElementById('shareTwitter').addEventListener('click', () => {
                 const text = `I spent ${formatMoney(gameState.totalSpent)} in HowRich.in! Can you beat me? 💰🎮`;
                 window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${window.location.origin}`);
             });
-            
+
             // Leaderboard
             document.getElementById('saveScore').addEventListener('click', saveToLeaderboard);
-            
+
             document.querySelectorAll('.leaderboard-tab').forEach(tab => {
                 tab.addEventListener('click', () => {
                     document.querySelectorAll('.leaderboard-tab').forEach(t => {
@@ -745,24 +834,24 @@
             gameState.timerMode = true;
             gameState.timerLeft = 60;
             const startSpent = gameState.totalSpent;
-            
+
             document.getElementById('timerDisplay').textContent = gameState.timerLeft;
-            
+
             gameState.timerInterval = setInterval(() => {
                 gameState.timerLeft--;
                 document.getElementById('timerDisplay').textContent = gameState.timerLeft;
-                
+
                 if (gameState.timerLeft <= 0) {
                     stopTimer();
                     const spentInChallenge = gameState.totalSpent - startSpent;
                     const targetAmount = 100000000000; // 1000 Cr
-                    
+
                     if (spentInChallenge >= targetAmount) {
                         alert(`🎉 Amazing! You spent ${formatMoney(spentInChallenge)} in 60 seconds! Challenge completed!`);
                     } else {
                         alert(`You spent ${formatMoney(spentInChallenge)} in 60 seconds. Target was ${formatMoney(targetAmount)}. Try again!`);
                     }
-                    
+
                     document.getElementById('timerMode').classList.add('hidden');
                 }
             }, 1000);
@@ -782,7 +871,7 @@
                 alert('Please enter your nickname!');
                 return;
             }
-            
+
             gameState.playerName = name;
             const scores = JSON.parse(localStorage.getItem('howrich_scores') || '[]');
             scores.push({
@@ -791,7 +880,7 @@
                 items: gameState.itemsBought,
                 date: new Date().toISOString()
             });
-            
+
             localStorage.setItem('howrich_scores', JSON.stringify(scores));
             loadLeaderboard();
             alert('Score saved! 🏆');
@@ -800,7 +889,7 @@
         function loadLeaderboard(period = 'daily') {
             const scores = JSON.parse(localStorage.getItem('howrich_scores') || '[]');
             let filteredScores = scores;
-            
+
             const now = new Date();
             if (period === 'daily') {
                 filteredScores = scores.filter(score => {
@@ -811,10 +900,10 @@
                 const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
                 filteredScores = scores.filter(score => new Date(score.date) >= weekAgo);
             }
-            
+
             filteredScores.sort((a, b) => b.score - a.score);
             const top10 = filteredScores.slice(0, 10);
-            
+
             const leaderboardHtml = top10.map((score, index) => `
                 <div class="flex justify-between items-center p-2 ${index < 3 ? 'bg-yellow-500 bg-opacity-20' : 'bg-black bg-opacity-20'} rounded mb-2">
                     <div class="flex items-center">
@@ -827,7 +916,7 @@
                     </div>
                 </div>
             `).join('');
-            
+
             document.getElementById('leaderboardList').innerHTML = leaderboardHtml || '<div class="text-center opacity-75">No scores yet!</div>';
         }
 
@@ -860,7 +949,7 @@
                 gameState.totalSpent = saved.totalSpent;
                 gameState.itemsBought = saved.itemsBought;
                 gameState.playerName = saved.playerName || '';
-                
+
                 if (gameState.playerName) {
                     document.getElementById('playerName').value = gameState.playerName;
                 }
@@ -876,6 +965,22 @@
             loadProgress();
             initGame();
         });
+        document.addEventListener("DOMContentLoaded", () => {
+            const menuBtn = document.getElementById("menuToggleBtn");
+            const buttonGroup = document.getElementById("buttonGroup");
+
+            menuBtn.addEventListener("click", () => {
+                buttonGroup.classList.toggle("show");
+            });
+
+            // Optional: Clicking outside closes menu on mobile
+            document.addEventListener("click", (e) => {
+                if (!menuBtn.contains(e.target) && !buttonGroup.contains(e.target)) {
+                    buttonGroup.classList.remove("show");
+                }
+            });
+        });
     </script>
 </body>
+
 </html>
