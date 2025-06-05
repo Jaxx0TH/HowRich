@@ -805,12 +805,12 @@
             });
 
             document.getElementById('shareWhatsApp').addEventListener('click', () => {
-                const text = `I spent ${formatMoney(gameState.totalSpent)} in HowRich.in! Can you beat me? Play now: ${window.location.origin}`;
+                const text = `I spent ${formatMoney(gameState.totalSpent)} in HowRich.in.net! Can you beat me? Play now: ${window.location.origin}`;
                 window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
             });
 
             document.getElementById('shareTwitter').addEventListener('click', () => {
-                const text = `I spent ${formatMoney(gameState.totalSpent)} in HowRich.in! Can you beat me? 💰🎮`;
+                const text = `I spent ${formatMoney(gameState.totalSpent)} in HowRich.in.net! Can you beat me? 💰🎮`;
                 window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${window.location.origin}`);
             });
 
